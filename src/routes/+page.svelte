@@ -1,5 +1,8 @@
 <script>
+    import { browser } from '$app/environment';
     import { nanoid } from 'nanoid'
+    import { onMount } from 'svelte';
+    
     /*
     "id": nanoid(),
     "title": "New item...",
@@ -9,17 +12,9 @@
     "marginPercentage": 0.5
     */
    
-   let items = loadFromLocal();
-   let editing = {};
-
-    function saveToLocal() {
-        
-    }
-
-    function loadFromLocal() {
-        return [];
-    }
-
+    let items = [];
+    let editing = {};
+    
     function calculateEstimatedTimeRange(timeInSeconds, marginPercentage) {
         const hours = timeInSeconds / 3600;
         const roundedHours = Math.ceil(hours);
@@ -44,11 +39,13 @@
         const textContent = event.target.textContent;
         const newValue = field === 'estimatedTime' ? parseFloat(textContent) * 60 : textContent;
         items = items.map(item => {
-        if (item.id === itemId) {
-            return { ...item, [field]: newValue };
-        }
-        return item;
+            if (item.id === itemId) {
+                return { ...item, [field]: newValue };
+            }
+            return item;
         });
+        if (browser)
+            localStorage.setItem("data", JSON.stringify(items));
     }
 
     function handleFocus(event, item) {
@@ -73,6 +70,12 @@
                 calculateEstimatedTimeRange(item.estimatedTime, item.marginPercentage)
         }));
     }
+
+    onMount(() => {
+        if(JSON.parse(localStorage.getItem("data"))) {
+            items = JSON.parse(localStorage.getItem("data"));
+        }
+    });
 
     let showPopup = false;
     let title = '';
@@ -101,14 +104,18 @@
         estimatedTime = 60;
         marginPercentage = 50;
         showPopup = false;
+        if (browser)
+            localStorage.setItem("data", JSON.stringify(items));
     }
 
     function printPage() {
         window.print();
     }
 
-    function resetLocalStorage(){
-        
+    function resetLocalStorage() {
+        if (browser)
+            localStorage.removeItem("data");
+        items = [];
     }
 
 </script>
@@ -147,7 +154,7 @@
   </div>
 {/if}
 
-<div class="relative max-w-5xl mx-auto bg-gray-800 rounded-lg shadow overflow-hidden">
+<div id="main" class="relative max-w-5xl mx-auto bg-gray-800 rounded-lg shadow overflow-hidden">
     <div class="px-6 py-4 bg-gray-800 flex justify-between items-center">
         <h1 class="text-xl font-bold text-white">Time Estimation</h1>
         <div>
@@ -225,3 +232,40 @@
 </div>
 <p class="text-white text-[10px] mt-6 text-center print:hidden">Made by <a href="https://github.com/OfficialAudite/" class=" text-blue-500 hover:text-blue-300 hover:underline">@officialaudite</a></p>
 <p class="text-white text-[10px] mb-6 text-center print:hidden">For bug reports or feature requests, mail to <a href="mailto:info@audite.dev" class=" text-blue-500 hover:text-blue-300 hover:underline">info@audite.dev</a></p>
+
+<style>
+  @media print {
+    :global(body) {
+      color: black;
+      background: white;
+    }
+    .bg-gray-700, .bg-gray-800 {
+      background-color: white !important;
+    }
+    .text-gray-400, .text-gray-500 {
+      color: black !important;
+    }
+    .print:hidden {
+      display: none !important;
+    }
+    [contenteditable="true"] {
+      border: none !important;
+      outline: none !important;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    th, td {
+      border: 1px solid black;
+      padding: 0.5rem;
+      color: black;
+    }
+    .absolute, .relative {
+      position: static !important;
+    }
+    h1{
+        color: #000;
+    }
+  }
+</style>
