@@ -1,6 +1,5 @@
 <script>
     import { nanoid } from 'nanoid'
-
     /*
     "id": nanoid(),
     "title": "New item...",
@@ -10,13 +9,21 @@
     "marginPercentage": 0.5
     */
    
-   let items = []
+   let items = loadFromLocal();
    let editing = {};
+
+    function saveToLocal() {
+        
+    }
+
+    function loadFromLocal() {
+        return [];
+    }
 
     function calculateEstimatedTimeRange(timeInSeconds, marginPercentage) {
         const hours = timeInSeconds / 3600;
         const roundedHours = Math.ceil(hours);
-        const adjustedHours = Math.ceil(hours * (1 + marginPercentage));
+        const adjustedHours = Math.ceil(hours * (1 + (marginPercentage/100)));
         return `${roundedHours}h - ${adjustedHours}h`;
     }
 
@@ -27,7 +34,7 @@
         items.forEach(item => {
             const hours = item.estimatedTime / 3600;
             totalHours += Math.ceil(hours);
-            totalAdjustedHours += Math.ceil(hours * (1 + item.marginPercentage));
+            totalAdjustedHours += Math.ceil(hours * (1 + (item.marginPercentage/100)));
         });
 
         return `${totalHours}h - ${totalAdjustedHours}h`;
@@ -35,7 +42,7 @@
 
     function handleFieldChange(event, itemId, field) {
         const textContent = event.target.textContent;
-        const newValue = field === 'estimatedTime' ? parseFloat(textContent) * 60 : textContent; // Convert minutes to seconds for estimatedTime if necessary
+        const newValue = field === 'estimatedTime' ? parseFloat(textContent) * 60 : textContent;
         items = items.map(item => {
         if (item.id === itemId) {
             return { ...item, [field]: newValue };
@@ -45,17 +52,17 @@
     }
 
     function handleFocus(event, item) {
-        editing[item.id] = true; // Start editing
-        event.target.textContent = item.estimatedTime / 60; // Convert seconds to minutes for editing
+        editing[item.id] = true;
+        event.target.textContent = item.estimatedTime / 60;
     }
 
     function handleBlur(event, item) {
         const minutes = parseFloat(event.target.textContent);
         if (!isNaN(minutes)) {
-            item.estimatedTime = minutes * 60; // Convert minutes back to seconds
+            item.estimatedTime = minutes * 60;
         }
         event.target.textContent = calculateEstimatedTimeRange(item.estimatedTime, item.marginPercentage);
-        editing[item.id] = false; // Reset the editing state for the item
+        editing[item.id] = false;
         items = items.map(i => i.id === item.id ? {...i} : i);
     }
 
@@ -71,20 +78,10 @@
     let title = '';
     let description = '';
     let type = '';
-    let estimatedTime = 60; // Default estimated time in minutes
-    let marginPercentage = 0.5; // Default margin percentage
+    let estimatedTime = 60;
+    let marginPercentage = 50;
 
     function addNew() {
-        /*
-        items = [...items, {
-            id: nanoid(),
-            title,
-            description,
-            type,
-            estimatedTime: estimatedTime * 60, // Convert minutes to seconds when saving
-            marginPercentage
-        }];
-        */
         showPopup = true;
     }
 
@@ -94,20 +91,24 @@
         title,
         description,
         type,
-        estimatedTime: estimatedTime * 60, // Convert minutes to seconds when saving
+        estimatedTime: estimatedTime * 60,
         marginPercentage
         }];
-        // Reset form and close popup
+
         title = '';
         description = '';
         type = '';
         estimatedTime = 60;
-        marginPercentage = 0.5;
+        marginPercentage = 50;
         showPopup = false;
     }
 
     function printPage() {
         window.print();
+    }
+
+    function resetLocalStorage(){
+        
     }
 
 </script>
@@ -135,7 +136,7 @@
         </div>
         <div class="mb-6">
           <label class="block mb-1" for="marginPercentage">Margin Percentage</label>
-          <input class="w-full p-2 rounded bg-gray-800 border border-gray-700" type="number" id="marginPercentage" bind:value={marginPercentage} step="0.01" />
+          <input class="w-full p-2 rounded bg-gray-800 border border-gray-700" type="number" id="marginPercentage" bind:value={marginPercentage} step="1" />
         </div>
         <div class="flex justify-end space-x-2">
           <button type="submit" class="bg-blue-600 hover:bg-blue-700 py-2 px-4 rounded focus:outline-none focus:ring">Save</button>
@@ -152,6 +153,9 @@
         <div>
             <button class="print:hidden bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 mr-2 rounded" on:click={() => printPage()}>
                 Export
+            </button>
+            <button class="print:hidden bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 mr-2 rounded" on:click={() => resetLocalStorage()}>
+                Reset
             </button>
         </div>
     </div>
@@ -204,7 +208,7 @@
                 {/each}
                 <tr>
                     <td colspan="4" class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 text-center print:hidden">
-                        <button class="w-6 h-6 rounded-full bg-gray-400 hover:bg-gray-300" on:click={() => addNew()}>+</button>
+                        <button class="w-6 h-6 rounded-full bg-gray-400/50 hover:bg-gray-400" on:click={() => addNew()}>+</button>
                     </td>
                 </tr>
                 {#if items.length !== 0}
