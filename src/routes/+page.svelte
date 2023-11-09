@@ -75,6 +75,16 @@
     let marginPercentage = 0.5; // Default margin percentage
 
     function addNew() {
+        /*
+        items = [...items, {
+            id: nanoid(),
+            title,
+            description,
+            type,
+            estimatedTime: estimatedTime * 60, // Convert minutes to seconds when saving
+            marginPercentage
+        }];
+        */
         showPopup = true;
     }
 
@@ -165,30 +175,30 @@
                 {#each items as item}
                     <tr id={item.id}>
                         <td class="relative px-6 py-4 whitespace-nowrap text-sm text-gray-400">
-                        <div contenteditable="true" class="py-1" on:blur={(event) => handleFieldChange(event, item.id, 'title')}>
-                            {item.title}
-                        </div>
-                        <object data="/edit.svg" type="image/svg+xml" class="print:hidden absolute top-1 right-1 w-4 h-4 cursor-pointer fill-current text-gray-500 hover:text-gray-300" aria-label="Edit Icon"></object>
+                            <div contenteditable="true" class="py-1" on:blur={(event) => handleFieldChange(event, item.id, 'title')}>
+                                {item.title}
+                            </div>
+                            <object data="/edit.svg" type="image/svg+xml" class="print:hidden absolute top-1 right-1 w-4 h-4 cursor-pointer fill-current text-gray-500 hover:text-gray-300" aria-label="Edit Icon"></object>
                         </td>
                         <td class="relative px-6 py-4 whitespace-normal text-sm text-gray-400 break-words max-w-s">
-                        <div contenteditable="true" class="py-1" on:blur={(event) => handleFieldChange(event, item.id, 'description')}>
-                            {item.description}
-                        </div>
-                        <object data="/edit.svg" type="image/svg+xml" class="print:hidden absolute top-1 right-1 w-4 h-4 cursor-pointer fill-current text-gray-500 hover:text-gray-300" aria-label="Edit Icon"></object>
+                            <div contenteditable="true" class="py-1" on:blur={(event) => handleFieldChange(event, item.id, 'description')}>
+                                {item.description}
+                            </div>
+                            <object data="/edit.svg" type="image/svg+xml" class="print:hidden absolute top-1 right-1 w-4 h-4 cursor-pointer fill-current text-gray-500 hover:text-gray-300" aria-label="Edit Icon"></object>
                         </td>
                         <td class="relative px-6 py-4 whitespace-nowrap text-sm text-gray-400">
-                        <div contenteditable="true" class="py-1" on:blur={(event) => handleFieldChange(event, item.id, 'type')}>
-                            {item.type}
-                        </div>
-                        <object data="/edit.svg" type="image/svg+xml" class="print:hidden absolute top-1 right-1 w-4 h-4 cursor-pointer fill-current text-gray-500 hover:text-gray-300" aria-label="Edit Icon"></object>
+                            <div contenteditable="true" class="py-1" on:blur={(event) => handleFieldChange(event, item.id, 'type')}>
+                                {item.type}
+                            </div>
+                            <object data="/edit.svg" type="image/svg+xml" class="print:hidden absolute top-1 right-1 w-4 h-4 cursor-pointer fill-current text-gray-500 hover:text-gray-300" aria-label="Edit Icon"></object>
                         </td>
                         <td class="relative px-6 py-4 whitespace-nowrap text-sm text-gray-400">
-                        <div contenteditable="true" class="py-1"
-                            on:focus={(event) => handleFocus(event, item)}
-                            on:blur={(event) => handleBlur(event, item)}>
-                            {item.displayTime}
-                        </div>
-                        <object data="/edit.svg" type="image/svg+xml" class="print:hidden absolute top-1 right-1 w-4 h-4 cursor-pointer fill-current text-gray-500 hover:text-gray-300" aria-label="Edit Icon"></object>
+                            <div contenteditable="true" class="py-1"
+                                on:focus={(event) => handleFocus(event, item)}
+                                on:blur={(event) => handleBlur(event, item)}>
+                                {item.displayTime}
+                            </div>
+                            <object data="/edit.svg" type="image/svg+xml" class="print:hidden absolute top-1 right-1 w-4 h-4 cursor-pointer fill-current text-gray-500 hover:text-gray-300" aria-label="Edit Icon"></object>
                         </td>
                     </tr>
                 {/each}
