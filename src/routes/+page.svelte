@@ -1,7 +1,6 @@
 <script>
     import { nanoid } from 'nanoid'
-    import { jsPDF } from 'jspdf';
-    
+
     /*
     "id": nanoid(),
     "title": "New item...",
@@ -15,7 +14,7 @@
    let editing = {};
 
     function calculateEstimatedTimeRange(timeInSeconds, marginPercentage) {
-        const hours = timeInSeconds / 60;
+        const hours = timeInSeconds / 3600;
         const roundedHours = Math.ceil(hours);
         const adjustedHours = Math.ceil(hours * (1 + marginPercentage));
         return `${roundedHours}h - ${adjustedHours}h`;
@@ -26,7 +25,7 @@
         let totalAdjustedHours = 0;
 
         items.forEach(item => {
-            const hours = item.estimatedTime / 60;
+            const hours = item.estimatedTime / 3600;
             totalHours += Math.ceil(hours);
             totalAdjustedHours += Math.ceil(hours * (1 + item.marginPercentage));
         });
@@ -35,89 +34,66 @@
     }
 
     function handleFieldChange(event, itemId, field) {
-        const newValue = event.target.textContent;
+        const textContent = event.target.textContent;
+        const newValue = field === 'estimatedTime' ? parseFloat(textContent) * 60 : textContent; // Convert minutes to seconds for estimatedTime if necessary
         items = items.map(item => {
-            if (item.id === itemId) {
-                return { ...item, [field]: field === 'estimatedTime' ? parseInt(newValue) : newValue };
-            }
-            return item;
+        if (item.id === itemId) {
+            return { ...item, [field]: newValue };
+        }
+        return item;
         });
     }
 
     function handleFocus(event, item) {
-        editing[item.id] = true;
-        event.target.textContent = item.estimatedTime;
+        editing[item.id] = true; // Start editing
+        event.target.textContent = item.estimatedTime / 60; // Convert seconds to minutes for editing
     }
-    
+
     function handleBlur(event, item) {
-        console.log(event);
         const minutes = parseFloat(event.target.textContent);
         if (!isNaN(minutes)) {
-            item.estimatedTime = minutes / 60;
+            item.estimatedTime = minutes * 60; // Convert minutes back to seconds
         }
-        editing[item.id] = false;
         event.target.textContent = calculateEstimatedTimeRange(item.estimatedTime, item.marginPercentage);
+        editing[item.id] = false; // Reset the editing state for the item
+        items = items.map(i => i.id === item.id ? {...i} : i);
     }
 
-    $: displayedItems = items.map(item => ({
-        ...item,
-        displayTime: editing[item.id] ? (item.estimatedTime / 60).toString() : calculateEstimatedTimeRange(item.estimatedTime, item.marginPercentage)
-    }));
+    $: if (items) {
+        items = items.map(item => ({
+            ...item,
+            displayTime: editing[item.id] ? (item.estimatedTime / 60).toString() + 'm' :
+                calculateEstimatedTimeRange(item.estimatedTime, item.marginPercentage)
+        }));
+    }
 
     let showPopup = false;
-
     let title = '';
     let description = '';
     let type = '';
-    let estimatedTime = 60;
-    let marginPercentage = 0.5;
+    let estimatedTime = 60; // Default estimated time in minutes
+    let marginPercentage = 0.5; // Default margin percentage
 
     function addNew() {
         showPopup = true;
     }
 
-    function saveNewItem() {        
-        const newItem = {
-            id: nanoid(),
-            title,
-            description,
-            type,
-            estimatedTime,
-            marginPercentage
-        };
-
-        items = [...items, newItem];
-
-        showPopup = false;
-
+    function saveNewItem() {
+        items = [...items, {
+        id: nanoid(),
+        title,
+        description,
+        type,
+        estimatedTime: estimatedTime * 60, // Convert minutes to seconds when saving
+        marginPercentage
+        }];
+        // Reset form and close popup
         title = '';
         description = '';
         type = '';
         estimatedTime = 60;
         marginPercentage = 0.5;
         showPopup = false;
-    }
-
-    function exportToPDF() {
-        const doc = new jsPDF();
-
-        // Add title
-        doc.setFontSize(18);
-        doc.text('Time Estimation', 14, 22);
-
-        // Table headers
-        doc.setFontSize(11);
-        doc.setTextColor(100);
-        const headers = ["Title", "Description", "Type", "Estimated Time"];
-        doc.table(14, 30, items.map(item => [
-            item.title,
-            item.description,
-            item.type,
-            calculateEstimatedTimeRange(item.estimatedTime, item.marginPercentage)
-        ]), headers, { autoSize: true });
-
-        // Save the PDF
-        doc.save('time_estimation.pdf');
     }
 
 </script>
@@ -148,7 +124,7 @@
           <input class="w-full p-2 rounded bg-gray-800 border border-gray-700" type="number" id="marginPercentage" bind:value={marginPercentage} step="0.01" />
         </div>
         <div class="flex justify-end space-x-2">
-          <button type="submit" class="bg-blue-600 hover:bg-blue-700 py-2 px-4 rounded focus:outline-none focus:ring">Add</button>
+          <button type="submit" class="bg-blue-600 hover:bg-blue-700 py-2 px-4 rounded focus:outline-none focus:ring">Save</button>
           <button type="button" class="bg-red-600 hover:bg-red-700 py-2 px-4 rounded focus:outline-none focus:ring" on:click={() => showPopup = false}>Cancel</button>
         </div>
       </form>
@@ -156,11 +132,11 @@
   </div>
 {/if}
 
-<div class="table-container relative max-w-5xl mx-auto bg-gray-800 rounded-lg shadow overflow-hidden">
+<div class="relative max-w-5xl mx-auto bg-gray-800 rounded-lg shadow overflow-hidden">
     <div class="px-6 py-4 bg-gray-800 flex justify-between items-center">
         <h1 class="text-xl font-bold text-white">Time Estimation</h1>
         <div>
-            <button class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 mr-2 rounded" on:click={() => exportToPDF()}>
+            <button class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 mr-2 rounded">
                 Export
             </button>
             <button class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" on:click={() => addNew()}>
@@ -180,12 +156,12 @@
                 </tr>
             </thead>
             <tbody class="bg-gray-800 divide-y divide-gray-700">
-                {#if displayedItems.length === 0}
+                {#if items.length === 0}
                     <tr>
                         <td colspan="4" class="px-6 py-4 whitespace-nowrap text-sm text-gray-400 text-center">No items to display</td>
                     </tr>
                 {/if}
-                {#each displayedItems as item}
+                {#each items as item}
                     <tr id={item.id}>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-400" contenteditable="true" 
                             on:blur="{(event) => handleFieldChange(event, item.id, 'title')}">
@@ -206,7 +182,7 @@
                         </td>
                     </tr>
                 {/each}
-                {#if displayedItems.length !== 0}
+                {#if items.length !== 0}
                     <tr class="bg-gray-700">
                         <td colspan="3" class="px-6 py-2 whitespace-nowrap text-sm text-gray-400 text-right font-bold">Summarized</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-400 font-bold">
