@@ -204,7 +204,7 @@
                 {/each}
                 <tr>
                     <td colspan="4" class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 text-center print:hidden">
-                        <button class="w-6 h-6 rounded-full bg-gray-400" on:click={() => addNew()}>+</button>
+                        <button class="w-6 h-6 rounded-full bg-gray-400 hover:bg-gray-300" on:click={() => addNew()}>+</button>
                     </td>
                 </tr>
                 {#if items.length !== 0}
