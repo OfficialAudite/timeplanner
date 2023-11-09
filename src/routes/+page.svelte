@@ -123,6 +123,10 @@
         items = [];
     }
 
+    function togglePopup() {
+        showPopup = !showPopup;
+    }
+
 </script>
 
 <Popup 
@@ -133,6 +137,7 @@
     type={type} 
     estimatedTime={estimatedTime} 
     marginPercentage={marginPercentage}
+    togglePopup={togglePopup}
 />
 
 <div id="main" class="relative max-w-5xl mx-auto bg-gray-800 rounded-lg shadow overflow-hidden">
