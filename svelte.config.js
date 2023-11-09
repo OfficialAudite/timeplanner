@@ -5,6 +5,12 @@ const config = {
   kit: {
     adapter: adapter()
   },
-  preprocess: vitePreprocess()
+  preprocess: vitePreprocess(),
+  onwarn: (warning, handler) => {
+    if (warning.code === 'css-unused-selector') {
+      return;
+    }
+    handler(warning);
+  },
 };
 export default config;
