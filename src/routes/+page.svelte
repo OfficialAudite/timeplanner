@@ -2,10 +2,12 @@
     import { browser } from '$app/environment';
     import { nanoid } from 'nanoid'
     import { onMount } from 'svelte';
-
+    import { t, locale } from 'svelte-i18n';
+    
     import Popup from '$lib/components/Popup.svelte';
     import ItemsTable from '$lib/components/ItemsTable.svelte';
     import Copyright from '$lib/components/Copyright.svelte';
+    import Dropzone from "svelte-file-dropzone/Dropzone.svelte";
    
     let items = [];
     let editing = {};
@@ -14,7 +16,7 @@
         const hours = timeInSeconds / 3600;
         const roundedHours = Math.ceil(hours);
         const adjustedHours = Math.ceil(hours * (1 + (marginPercentage/100)));
-        return `${roundedHours}h - ${adjustedHours}h`;
+        return `${roundedHours}${$t('hours_short')} - ${adjustedHours}${$t('hours_short')}`;
     }
 
     function calculateTotalTimeRange(items) {
@@ -27,7 +29,7 @@
             totalAdjustedHours += Math.ceil(hours * (1 + (item.marginPercentage/100)));
         });
 
-        return `${totalHours}h - ${totalAdjustedHours}h`;
+        return `${totalHours}${$t('hours_short')} - ${totalAdjustedHours}${$t('hours_short')}`;
     }
 
     function handleFieldChange(event, itemId, field) {
@@ -130,14 +132,11 @@
         marginPercentage = 50;
     }
 
-    import Dropzone from "svelte-file-dropzone/Dropzone.svelte";
 
     let image = getImage();
 
     $: image;
-
-    console.log(image);
-
+    
     function getImage() {
         if (browser)
             return localStorage.getItem("image");
@@ -166,7 +165,20 @@
         };
     }
 
+    let initlocale;
+
+    if (browser)
+        initlocale = localStorage.getItem("locale");
+
     let currentDate = new Date().toJSON().slice(0, 10);
+
+    $: if ($locale){
+        if (browser){
+            if($locale !== initlocale){
+                localStorage.setItem("locale", $locale);
+            }
+        }
+    }
 
 </script>
 
@@ -185,7 +197,7 @@
     {#if image !== null && image !== ""}
         <img src={image} alt="Logo" class="w-32 mx-auto">
     {:else}
-        <p class="text-center">Upload your logo for export visibility. Click or drop your image here.</p>
+        <p class="text-center">{$t('logo_upload')}</p>
     {/if}
 </Dropzone>
 
@@ -195,20 +207,24 @@
 
 <div id="main" class="relative max-w-5xl mx-auto bg-gray-800 print:bg-white print:rounded-none rounded-lg shadow print:shadow-transparent overflow-hidden">
     <div class="px-6 py-4 bg-gray-800 flex justify-between items-center">
-        <h1 class="text-xl font-bold text-white">Time Estimation</h1>
+        <h1 class="text-xl font-bold text-white">{$t('title')}</h1>
         <div>
+            <select bind:value={$locale} class="bg-gray-800 print:hidden text-white border border-gray-600 rounded-md px-4 py-2 mr-2 hover:border-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                <option value="en">English</option>
+                <option value="sv">Swedish</option>
+            </select>
             {#if items.length > 0}
                 <button class="print:hidden bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 mr-2 rounded" on:click={() => resetLocalStorage()}>
-                    Reset Items
+                    {$t('reset_items')}
                 </button>
             {/if}
             {#if image !== null && image !== ""}
                 <button class="print:hidden bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 mr-2 rounded" on:click={() => removeLogo()}>
-                    Reset Logo
+                    {$t('reset_logo')}
                 </button>
             {/if}
             <button class="print:hidden bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 mr-2 rounded" on:click={() => printPage()}>
-                Export
+                {$t('export')}
             </button>
         </div>
     </div>
