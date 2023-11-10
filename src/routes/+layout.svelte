@@ -8,6 +8,6 @@
 
 <style>
     :global(body) {
-        @apply bg-gray-900 text-white h-screen;
+        @apply bg-gray-900 text-white;
     }
 </style>

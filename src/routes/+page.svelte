@@ -110,7 +110,15 @@
     function resetLocalStorage() {
         if (browser)
             localStorage.removeItem("data");
+
         items = [];
+    }
+
+    function removeLogo() {
+        if (browser)
+            localStorage.removeItem("image");
+
+        image = "";
     }
 
     function resetPopupData(){
@@ -121,6 +129,44 @@
         estimatedTime = 60;
         marginPercentage = 50;
     }
+
+    import Dropzone from "svelte-file-dropzone/Dropzone.svelte";
+
+    let image = getImage();
+
+    $: image;
+
+    console.log(image);
+
+    function getImage() {
+        if (browser)
+            return localStorage.getItem("image");
+        else
+            return "";
+    }
+    
+    let files = {
+        accepted: [],
+        rejected: []
+    };
+
+    function handleFilesSelect(e) {
+        const { acceptedFiles, fileRejections } = e.detail;
+        files.accepted = [...files.accepted, ...acceptedFiles];
+        files.rejected = [...files.rejected, ...fileRejections];
+
+        // get the uploaded image, convert it to base64 and save it to the localStorage under image key
+        const reader = new FileReader();
+        reader.readAsDataURL(files.accepted[0]);
+        reader.onload = () => {
+            const base64Image = reader.result;
+            if (browser)
+                localStorage.setItem("image", base64Image);
+            image = base64Image;
+        };
+    }
+
+    let currentDate = new Date().toJSON().slice(0, 10);
 
 </script>
 
@@ -135,15 +181,34 @@
     resetPopupData={resetPopupData}
 />
 
-<div id="main" class="relative max-w-5xl mx-auto bg-gray-800 print:bg-white print:rounded-none rounded-lg shadow overflow-hidden">
+<Dropzone on:drop={handleFilesSelect} accept="image/png" containerClasses="max-w-sm mx-auto my-4 print:!hidden !bg-transparent !border-white/25">
+    {#if image !== null && image !== ""}
+        <img src={image} alt="Logo" class="w-32 mx-auto">
+    {:else}
+        <p class="text-center">Upload your logo for export visibility. Click or drop your image here.</p>
+    {/if}
+</Dropzone>
+
+{#if image !== null && image !== ""}
+    <img src={image} alt="Logo" class="w-64 mx-auto my-4 hidden print:block">
+{/if}
+
+<div id="main" class="relative max-w-5xl mx-auto bg-gray-800 print:bg-white print:rounded-none rounded-lg shadow print:shadow-transparent overflow-hidden">
     <div class="px-6 py-4 bg-gray-800 flex justify-between items-center">
         <h1 class="text-xl font-bold text-white">Time Estimation</h1>
         <div>
+            {#if items.length > 0}
+                <button class="print:hidden bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 mr-2 rounded" on:click={() => resetLocalStorage()}>
+                    Reset Items
+                </button>
+            {/if}
+            {#if image !== null && image !== ""}
+                <button class="print:hidden bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 mr-2 rounded" on:click={() => removeLogo()}>
+                    Reset Logo
+                </button>
+            {/if}
             <button class="print:hidden bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 mr-2 rounded" on:click={() => printPage()}>
                 Export
-            </button>
-            <button class="print:hidden bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 mr-2 rounded" on:click={() => resetLocalStorage()}>
-                Reset
             </button>
         </div>
     </div>
@@ -160,6 +225,8 @@
 </div>
 
 <Copyright />
+
+<p class="hidden print:block fixed print:bottom-0 print:right-0 text-black">{currentDate}</p>
 
 <style>
   @media print {
