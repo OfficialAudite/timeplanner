@@ -9,6 +9,10 @@ export const load = async ({ url }) => {
 
     if (browser)
         savedLanguage = localStorage.getItem('locale');
+
+    if (!savedLanguage){
+        savedLanguage = "en";
+    }
     
     let initialLocale = savedLanguage || url.searchParams.get('lang') || getLocaleFromNavigator();
 
