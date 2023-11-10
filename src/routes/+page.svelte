@@ -123,16 +123,26 @@
         items = [];
     }
 
+    function resetPopupData(){
+        showPopup = false;
+        title = '';
+        description = '';
+        type = '';
+        estimatedTime = 60;
+        marginPercentage = 50;
+    }
+
 </script>
 
 <Popup 
-    showPopup={showPopup} 
+    bind:showPopup={showPopup} 
     saveNewItem={saveNewItem} 
-    title={title} 
-    description={description} 
-    type={type} 
-    estimatedTime={estimatedTime} 
-    marginPercentage={marginPercentage}
+    bind:title={title} 
+    bind:description={description} 
+    bind:type={type} 
+    bind:estimatedTime={estimatedTime} 
+    bind:marginPercentage={marginPercentage}
+    resetPopupData={resetPopupData}
 />
 
 <div id="main" class="relative max-w-5xl mx-auto bg-gray-800 rounded-lg shadow overflow-hidden">

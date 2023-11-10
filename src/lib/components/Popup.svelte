@@ -6,6 +6,7 @@
     export let type;
     export let estimatedTime;
     export let marginPercentage;
+    export let resetPopupData;
 </script>
 
 {#if showPopup}
@@ -35,7 +36,7 @@
         </div>
         <div class="flex justify-end space-x-2">
           <button type="submit" class="bg-blue-600 hover:bg-blue-700 py-2 px-4 rounded focus:outline-none focus:ring">Save</button>
-          <button type="button" class="bg-red-600 hover:bg-red-700 py-2 px-4 rounded focus:outline-none focus:ring" on:click={() => showPopup = false}>Cancel</button>
+          <button type="button" class="bg-red-600 hover:bg-red-700 py-2 px-4 rounded focus:outline-none focus:ring" on:click={() => resetPopupData()}>Cancel</button>
         </div>
       </form>
     </div>
