@@ -4,18 +4,8 @@
     import { onMount } from 'svelte';
 
     import Popup from '$lib/components/Popup.svelte';
-    import ItemRow from '$lib/components/ItemRow.svelte';
     import ItemsTable from '$lib/components/ItemsTable.svelte';
     import Copyright from '$lib/components/Copyright.svelte';
-
-    /*
-    "id": nanoid(),
-    "title": "New item...",
-    "description": "New description...",
-    "type": "New type...",
-    "estimatedTime": 60,
-    "marginPercentage": 0.5
-    */
    
     let items = [];
     let editing = {};
@@ -95,12 +85,12 @@
 
     function saveNewItem() {
         items = [...items, {
-        id: nanoid(),
-        title,
-        description,
-        type,
-        estimatedTime: estimatedTime * 60,
-        marginPercentage
+            id: nanoid(),
+            title,
+            description,
+            type,
+            estimatedTime: estimatedTime * 60,
+            marginPercentage
         }];
 
         title = '';
