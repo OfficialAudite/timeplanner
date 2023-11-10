@@ -22,6 +22,6 @@
 	},
 	"type": "module",
 	"dependencies": {
-		"jspdf": "^2.5.1"
+		"svelte-file-dropzone": "^2.0.2"
 	}
 }
