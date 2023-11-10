@@ -212,6 +212,7 @@
             <select bind:value={$locale} class="bg-gray-800 print:hidden text-white border border-gray-600 rounded-md px-4 py-2 mr-2 hover:border-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                 <option value="en">English</option>
                 <option value="sv">Swedish</option>
+                <option value="lt">Lithuanian</option>
             </select>
             {#if items.length > 0}
                 <button class="print:hidden bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 mr-2 rounded" on:click={() => resetLocalStorage()}>

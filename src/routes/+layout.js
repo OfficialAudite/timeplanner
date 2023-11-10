@@ -12,11 +12,12 @@ export const load = async ({ url }) => {
     
     let initialLocale = savedLanguage || url.searchParams.get('lang') || getLocaleFromNavigator();
 
-    const supportedLanguages = ['en', 'sv'];
+    const supportedLanguages = ['en', 'sv', 'lt'];
     initialLocale = supportedLanguages.includes(initialLocale) ? initialLocale : 'en';
 
     register('en', () => import('../locales/en.json'));
     register('sv', () => import('../locales/sv.json'));
+    register('lt', () => import('../locales/lt.json'));
 
     init({
         fallbackLocale: 'en',
