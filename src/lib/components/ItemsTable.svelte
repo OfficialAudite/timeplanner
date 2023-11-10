@@ -1,5 +1,6 @@
 <script>
     import ItemRow from "./ItemRow.svelte";
+    import { t } from "svelte-i18n";
     export let items;
     export let handleFieldChange;
     export let handleFocus;
@@ -14,19 +15,19 @@
             <tr>
                 <th
                     class="px-6 py-3 text-left text-xs print:font-bold font-medium text-gray-300 uppercase tracking-wider"
-                    >Title</th
+                    >{$t('item_title')}</th
                 >
                 <th
                     class="px-6 py-3 text-left text-xs print:font-bold font-medium text-gray-300 uppercase tracking-wider w-2/4 break-words"
-                    >Description</th
+                    >{$t('description')}</th
                 >
                 <th
                     class="px-6 py-3 text-left text-xs print:font-bold font-medium text-gray-300 uppercase tracking-wider"
-                    >Type</th
+                    >{$t('type')}</th
                 >
                 <th
                     class="px-6 py-3 text-left text-xs print:font-bold font-medium text-gray-300 uppercase tracking-wider"
-                    >Estimated Time</th
+                    >{$t('estimated_time')}</th
                 >
             </tr>
         </thead>
@@ -36,7 +37,7 @@
                     <td
                         colspan="4"
                         class="px-6 py-4 whitespace-nowrap text-sm text-gray-400 text-center"
-                        >No items to display</td
+                        >{$t('no_items')}</td
                     >
                 </tr>
             {/if}
@@ -64,7 +65,7 @@
                     <td
                         colspan="3"
                         class="px-6 py-2 whitespace-nowrap text-sm text-gray-400 text-right font-bold"
-                        >Summarized</td
+                        >{$t('summarized')}</td
                     >
                     <td
                         class="px-6 py-4 whitespace-nowrap text-sm text-gray-400 font-bold"

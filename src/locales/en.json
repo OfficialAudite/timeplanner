@@ -1,0 +1,29 @@
+{
+    "title": "Time Estimation",
+    "reset_items": "Reset Items",
+    "reset_logo": "Reset Logo",
+    "logo_upload": "Upload your logo for export visibility. Click or drop your image here.",
+    "export": "Export",
+
+    "disclaimer": "All data, including item details and the logo, is securely stored locally within your browser. To ensure that time abbreviations are updated correctly, a page refresh may be required after changing the language setting.",
+    "copyright1": "Made by",
+    "copyright2": "For bug reports or feature requests, mail to",
+
+    "item_title": "Title",
+    "description": "Description",
+    "type": "Type",
+    "estimated_time": "Estimated Time",
+    "no_items": "No items to display",
+    "summarized": "Summarized",
+
+    "add_new_item": "Add New Item",
+    "popup_title": "Title",
+    "popup_description": "Description",
+    "popup_type": "Type",
+    "popup_estimated_time": "Estimated Time (minutes)",
+    "margin_percentage": "Margin Percentage",
+    "add_button": "Add",
+    "cancel_button": "Cancel",
+
+    "hours_short": "h"
+}

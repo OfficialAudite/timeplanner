@@ -1,0 +1,29 @@
+{
+    "title": "Tidsestimering",
+    "reset_items": "Återställ Artiklar",
+    "reset_logo": "Återställ Logotyp",
+    "logo_upload": "Ladda upp din logotyp för exportvisning. Klicka eller släpp din bild här.",
+    "export": "Exportera",
+
+    "disclaimer": "All data, inklusive detaljer om artiklar och logotypen, lagras säkert lokalt i din webbläsare. För att säkerställa att tidsförkortningar uppdateras korrekt kan det krävas en siduppdatering efter att språkinställningen har ändrats.",
+    "copyright1": "Skapad av",
+    "copyright2": "För felrapporter eller funktionsförfrågningar, mejla till",
+
+    "item_title": "Titel",
+    "description": "Beskrivning",
+    "type": "Typ",
+    "estimated_time": "Estimerad tid",
+    "no_items": "Inga artiklar att visa",
+    "summarized": "Summerat",
+
+    "add_new_item": "Lägg Till Ny Artikel",
+    "popup_title": "Titel",
+    "popup_description": "Beskrivning",
+    "popup_type": "Typ",
+    "popup_estimated_time": "Estimerad Tid (minuter)",
+    "margin_percentage": "Marginalprocent",
+    "add_button": "Lägg till",
+    "cancel_button": "Avbryt",
+
+    "hours_short": "tim"
+}
