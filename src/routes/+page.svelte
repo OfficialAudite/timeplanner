@@ -135,7 +135,7 @@
     resetPopupData={resetPopupData}
 />
 
-<div id="main" class="relative max-w-5xl mx-auto bg-gray-800 rounded-lg shadow overflow-hidden">
+<div id="main" class="relative max-w-5xl mx-auto bg-gray-800 print:bg-white print:rounded-none rounded-lg shadow overflow-hidden">
     <div class="px-6 py-4 bg-gray-800 flex justify-between items-center">
         <h1 class="text-xl font-bold text-white">Time Estimation</h1>
         <div>
