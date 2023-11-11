@@ -193,7 +193,7 @@
     resetPopupData={resetPopupData}
 />
 
-<Dropzone on:drop={handleFilesSelect} accept="image/png" containerClasses="max-w-sm mx-auto my-4 print:!hidden !bg-transparent !border-white/25">
+<Dropzone on:drop={handleFilesSelect} accept="image/png" containerClasses="max-w-sm mx-auto my-4 print:!hidden !bg-transparent !border-white/[.05]">
     {#if image !== null && image !== ""}
         <img src={image} alt="Logo" class="w-32 mx-auto">
     {:else}
