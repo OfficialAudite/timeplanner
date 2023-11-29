@@ -1,5 +1,7 @@
 <script>
+    import { onMount } from 'svelte';
     import ItemRow from "./ItemRow.svelte";
+    import Sortable from 'sortablejs';
     import { t } from "svelte-i18n";
     export let items;
     export let handleFieldChange;
@@ -8,6 +10,21 @@
     export let addNew;
     export let calculateTotalTimeRange;
     export let removeItem;
+
+    let tbodyElement;
+
+    onMount(() => {
+        Sortable.create(tbodyElement, {
+            filter: ".filtered",
+            handle: ".drag-me",
+            animation: 150,
+            ghostClass: "bg-gray-700",
+            onMove: (evt) => {
+                // Prevent moving items that already exist
+                return !evt.related.classList.contains('existing-item');
+            }
+        });
+    });
 </script>
 
 <div class="overflow-x-auto">
@@ -36,7 +53,7 @@
                 >
             </tr>
         </thead>
-        <tbody class="bg-gray-800 divide-y divide-gray-700">
+        <tbody class="bg-gray-800 divide-y divide-gray-700" bind:this={tbodyElement}>
             {#if items.length === 0}
                 <tr>
                     <td
@@ -55,7 +72,7 @@
                     {removeItem}
                 />
             {/each}
-            <tr class="filtered">
+            <tr class="existing-item">
                 <td
                     colspan="100%"
                     class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 text-center print:hidden"
@@ -67,7 +84,7 @@
                 </td>
             </tr>
             {#if items.length !== 0}
-                <tr class="filtered bg-gray-700">
+                <tr class="existing-item bg-gray-700">
                     <td colspan="3"
                         class="print:table-cell hidden px-6 py-2 whitespace-nowrap text-sm text-gray-400 text-right font-bold">
                         {$t('summarized')}

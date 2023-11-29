@@ -9,12 +9,18 @@
 
 <tr class="relative group" id={item.id}>
     <td class="relative px-6 py-4 whitespace-nowrap text-sm text-gray-400">
-        <button on:click={removeItem(item.id)} class="print:hidden hover:pointer absolute top-1 left-1 w-4 h-4">
-            X
+        <!-- Delete button with SVG icon -->
+        <button on:click={() => removeItem(item.id)} class="print:hidden hover:pointer absolute top-1 left-1 w-4 h-4">
+            <object data="/delete.svg" type="image/svg+xml" class="pointer-events-none w-full h-full" aria-label="Delete"></object>
+        </button>
+        
+        <!-- Drag handle button with SVG icon -->
+        <button class="print:hidden hover:pointer absolute top-6 left-1 w-4 h-4 drag-me">
+            <object data="/drag.svg" type="image/svg+xml" class="pointer-events-none w-full h-full text-gray-500" aria-label="Drag Handle"></object>
         </button>
         <div
             contenteditable="true"
-            class="py-1"
+            class="py-1 ml-3 print:ml-0"
             on:blur={(event) => handleFieldChange(event, item.id, "title")}
         >
             {item.title}
