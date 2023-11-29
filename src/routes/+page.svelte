@@ -60,6 +60,20 @@
         items = items.map(i => i.id === item.id ? {...i} : i);
     }
 
+    // save margin percentage to local storage with seperate key marginPercentage from items
+    $: if (items) {
+        if(browser)
+            localStorage.setItem("marginPercentage", marginPercentage);
+    }
+
+    $: if (items) {
+        items = items.map(item => (item.marginPercentage !== undefined) ? {
+            ...item,
+            displayTime: editing[item.id] ? (item.estimatedTime / 60).toString() + 'm' :
+                calculateEstimatedTimeRange(item.estimatedTime, item.marginPercentage)
+        } : item);
+    }
+
     $: if (items) {
         items = items.map(item => ({
             ...item,
@@ -79,7 +93,11 @@
     let description = '';
     let type = '';
     let estimatedTime = 60;
-    let marginPercentage = 50;
+    let marginPercentage;
+
+    if(browser){
+        marginPercentage = localStorage.getItem("marginPercentage") ?? 50;
+    }
 
     function addNew() {
         showPopup = true;
@@ -99,10 +117,11 @@
         description = '';
         type = '';
         estimatedTime = 60;
-        marginPercentage = 50;
         showPopup = false;
-        if (browser)
+        if (browser){
             localStorage.setItem("data", JSON.stringify(items));
+            localStorage.setItem("marginPercentage", marginPercentage);
+        }
     }
 
     function printPage() {
@@ -129,7 +148,9 @@
         description = '';
         type = '';
         estimatedTime = 60;
-        marginPercentage = 50;
+        if(browser){
+            marginPercentage = localStorage.getItem("marginPercentage") ?? 50;
+        }
     }
 
 
@@ -176,8 +197,15 @@
         if (browser){
             if($locale !== initlocale){
                 localStorage.setItem("locale", $locale);
+                items = items.map(item => ({ ...item }));
             }
         }
+    }
+
+    function removeItem(itemId) {
+        items = items.filter(item => item.id !== itemId);
+        if (browser)
+            localStorage.setItem("data", JSON.stringify(items));
     }
 
 </script>
@@ -237,6 +265,7 @@
         handleBlur={handleBlur}
         addNew={addNew}
         calculateTotalTimeRange={calculateTotalTimeRange}
+        removeItem={removeItem}
     />
 
 </div>

@@ -1,5 +1,7 @@
 <script>
+    import { onMount } from 'svelte';
     import ItemRow from "./ItemRow.svelte";
+    import Sortable from 'sortablejs';
     import { t } from "svelte-i18n";
     export let items;
     export let handleFieldChange;
@@ -7,6 +9,22 @@
     export let handleBlur;
     export let addNew;
     export let calculateTotalTimeRange;
+    export let removeItem;
+
+    let tbodyElement;
+
+    onMount(() => {
+        Sortable.create(tbodyElement, {
+            filter: ".filtered",
+            handle: ".drag-me",
+            animation: 150,
+            ghostClass: "bg-gray-700",
+            onMove: (evt) => {
+                // Prevent moving items that already exist
+                return !evt.related.classList.contains('existing-item');
+            }
+        });
+    });
 </script>
 
 <div class="overflow-x-auto">
@@ -29,13 +47,17 @@
                     class="px-6 py-3 text-left text-xs print:font-bold font-medium text-gray-300 uppercase tracking-wider"
                     >{$t('estimated_time')}</th
                 >
+                <th
+                    class="print:hidden px-6 py-3 text-left text-xs print:font-bold font-medium text-gray-300 uppercase tracking-wider"
+                    >{$t('percentage')}</th
+                >
             </tr>
         </thead>
-        <tbody class="bg-gray-800 divide-y divide-gray-700">
+        <tbody class="bg-gray-800 divide-y divide-gray-700" bind:this={tbodyElement}>
             {#if items.length === 0}
                 <tr>
                     <td
-                        colspan="4"
+                        colspan="100%"
                         class="px-6 py-4 whitespace-nowrap text-sm text-gray-400 text-center"
                         >{$t('no_items')}</td
                     >
@@ -47,11 +69,12 @@
                     {handleFieldChange}
                     {handleFocus}
                     {handleBlur}
+                    {removeItem}
                 />
             {/each}
-            <tr>
+            <tr class="existing-item">
                 <td
-                    colspan="4"
+                    colspan="100%"
                     class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 text-center print:hidden"
                 >
                     <button
@@ -61,12 +84,15 @@
                 </td>
             </tr>
             {#if items.length !== 0}
-                <tr class="bg-gray-700">
-                    <td
-                        colspan="3"
-                        class="px-6 py-2 whitespace-nowrap text-sm text-gray-400 text-right font-bold"
-                        >{$t('summarized')}</td
-                    >
+                <tr class="existing-item bg-gray-700">
+                    <td colspan="3"
+                        class="print:table-cell hidden px-6 py-2 whitespace-nowrap text-sm text-gray-400 text-right font-bold">
+                        {$t('summarized')}
+                    </td>
+                    <td colspan="4"
+                        class="print:hidden px-6 py-2 whitespace-nowrap text-sm text-gray-400 text-right font-bold">
+                        {$t('summarized')}
+                    </td>
                     <td
                         class="px-6 py-4 whitespace-nowrap text-sm text-gray-400 font-bold"
                     >
