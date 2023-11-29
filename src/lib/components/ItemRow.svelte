@@ -3,10 +3,15 @@
   export let handleFieldChange;
   export let handleFocus;
   export let handleBlur;
+  export let removeItem;
 </script>
 
-<tr id={item.id}>
+
+<tr class="relative group" id={item.id}>
     <td class="relative px-6 py-4 whitespace-nowrap text-sm text-gray-400">
+        <button on:click={removeItem(item.id)} class="print:hidden hover:pointer absolute top-1 left-1 w-4 h-4">
+            X
+        </button>
         <div
             contenteditable="true"
             class="py-1"
@@ -62,6 +67,21 @@
             on:blur={(event) => handleBlur(event, item)}
         >
             {item.displayTime}
+        </div>
+        <object
+            data="/edit.svg"
+            type="image/svg+xml"
+            class="print:hidden absolute top-1 right-1 w-4 h-4 cursor-pointer fill-current text-gray-500 hover:text-gray-300"
+            aria-label="Edit Icon"
+        />
+    </td>
+    <td class="print:hidden relative px-6 py-4 whitespace-nowrap text-sm text-gray-400">
+        <div
+            contenteditable="true"
+            class="py-1"
+            on:blur={(event) => handleFieldChange(event, item.id, "marginPercentage")}
+        >
+            {item.marginPercentage}
         </div>
         <object
             data="/edit.svg"
